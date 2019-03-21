@@ -1,0 +1,194 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+# Exploración de Datos con dplyr
+
+
+```{r}
+library(dplyr)
+library(rmarkdown)
+```
+
+Se importa el archivo .csv para trabajar con una codificación UTF-8 en dado caso tenga caracteres especiales.
+
+```{r}
+dataset <- read.csv("demandaBicis.csv", encoding = "UTF-8")
+dataset
+```
+
+Se extraen las columnas con las que se trabajará en el resto del documento.
+Mes (mnth)
+Hora (hr)
+Temporada (season)
+Temperatura (temp)
+Humedad (hum)
+Alquileres casuales (casual)
+Alquileres registrados (resgistered)
+Número total de alquileres (cnt)
+
+```{r}
+Sub1.dataset <- dataset %>%
+  select(mnth, hr, season, temp, hum, casual, registered, cnt)
+Sub1.dataset
+```
+
+## 1. ¿Qué mes es el que tiene la mayor demanda?
+
+Se agrupan los datos por mes y se realiza una sumatoria de los alquileres casuales, registrados y el total de estos.
+
+```{r}
+resumen_mes <- Sub1.dataset %>%
+  group_by(mnth) %>%
+  summarise(Casual = sum(casual), Registrados = sum(registered), Total = sum(cnt))
+resumen_mes
+```
+
+Para conocer el mes con mayor demanda se debe encontrar el número más alto de alquiler por mes.
+
+```{r}
+resumen_mes$mnth[resumen_mes$Casual == max(resumen_mes$Casual)]
+resumen_mes$mnth[resumen_mes$Registrados == max(resumen_mes$Registrados)]
+resumen_mes$mnth[resumen_mes$Total == max(resumen_mes$Total)]
+```
+
+
+### *Respuesta:*
+* El mes de Julio (7) tiene la demanda mayor para los alquileres casuales.
+* El mes de Agosto (8) tiene la demanda mayor para los alquileres registrados.
+* El mes de Agosto (8) tiene la demanda mayor en el total de alquileres.
+
+## 2. ¿Qué rango de hora es la de mayor demanda?
+
+Se agrupan los datos por hora y se realiza una sumatoria de los alquileres casuales, registrados y el total de estos.
+
+```{r}
+resumen_hora <- Sub1.dataset %>%
+  group_by(hr) %>%
+  summarise(Casual = sum(casual), Registrados = sum(registered), Total = sum(cnt))
+resumen_hora
+```
+
+Para conocer la hora con mayor demanda se debe encontrar el número más alto de alquiler por hora.
+
+```{r}
+resumen_hora$hr[resumen_hora$Casual == max(resumen_hora$Casual)]
+resumen_hora$hr[resumen_hora$Registrados == max(resumen_hora$Registrados)]
+resumen_hora$hr[resumen_hora$Total == max(resumen_hora$Total)]
+```
+
+### *Respuesta:*
+* El rango de hora entre 14:00 - 15:00 tiene la demanda mayor para los alquileres casuales.
+* El rango de hora entre 17:00 - 18:00 tiene la demanda mayor para los alquileres registrados.
+* El rango de hora entre 17:00 - 18:00 tiene la demanda mayor en el total de alquileres.
+
+## 3. ¿Que temporada es la mas alta?
+
+Se agrupan los datos por temporada y se realiza una sumatoria de los alquileres casuales, registrados y el total de estos. Cada temporada se identifica como:
+
+* Spring (1)
+* Summer (2)
+* Fall (3)
+* Winter (4)
+
+
+```{r}
+resumen_temp <- Sub1.dataset %>%
+  group_by(season) %>%
+  summarise(Casual = sum(casual), Registrados = sum(registered), Total = sum(cnt))
+resumen_temp
+```
+
+Para conocer la temporada con mayor demanda se debe encontrar el número más alto de alquiler por hora.
+
+```{r}
+resumen_temp$season[resumen_temp$Casual == max(resumen_temp$Casual)]
+resumen_temp$season[resumen_temp$Registrados == max(resumen_temp$Registrados)]
+resumen_temp$season[resumen_temp$Total == max(resumen_temp$Total)]
+```
+
+### *Respuesta:*
+* Para los alquileres casuales, registrados y el total de estos la temporada de mayor demanda es Otoño (Fall - 3).
+
+## 4. ¿A que temperatura baja la demanda?
+
+Se agrupan los datos por temperatura y se realiza una sumatoria de los alquileres casuales, registrados y el total de estos.
+
+```{r}
+resumen_tm <- Sub1.dataset %>%
+  group_by(temp) %>%
+  summarise(Casual = sum(casual), Registrados = sum(registered), Total = sum(cnt))
+resumen_tm
+```
+
+Para conocer la temperatura con menor demanda se debe encontrar el número más pequeño de alquiler por temperatura.
+
+```{r}
+resumen_tm$temp[resumen_tm$Casual == min(resumen_tm$Casual)]
+resumen_tm$temp[resumen_tm$Registrados == min(resumen_tm$Registrados)]
+resumen_tm$temp[resumen_tm$Total == min(resumen_tm$Total)]
+```
+
+### *Respuesta:*
+* La demanda menor para los alquileres casuales corresponde una temperatura de 0.02&deg;C
+* La demanda menor para los alquileres registrados corresponde una temperatura de 1&deg;C
+* La demanda menor en el total de alquileres corresponde a una temperatura de 1&deg;C
+
+## 5. ¿A que humedad baja la demanda?
+
+Se agrupan los datos por su nivel de humedad y se realiza una sumatoria de los alquileres casuales, registrados y el total de estos.
+
+```{r}
+resumen_hum <- Sub1.dataset %>%
+  group_by(hum) %>%
+  summarise(Casual = sum(casual), Registrados = sum(registered), Total = sum(cnt))
+resumen_hum
+```
+
+Para conocer la humedad con menor demanda se debe encontrar el número más pequeño de alquiler por temperatura.
+
+```{r}
+resumen_hum$hum[resumen_hum$Casual == min(resumen_hum$Casual)]
+resumen_hum$hum[resumen_hum$Registrados == min(resumen_hum$Registrados)]
+resumen_hum$hum[resumen_hum$Total == min(resumen_hum$Total)]
+```
+
+### *Respuesta:*
+* Para todos los casos, la demanda menor corresponde a un nivel de humedad igual a 0.13
+
+## 6. ¿Que condiciones serian ideales para nuestra demanda?
+
+
+
+## 7. Realice una gráfica de la densidad de temperatura.
+## 8. Con una gráfica explique en que temporada hubieron mas rentas de bicicletas.
+
+```{r}
+grafica_temp <- Sub1.dataset %>%
+  group_by(season) %>%
+  summarise(Total = sum(cnt))
+
+barplot(grafica_temp$Total, main="Rentas vs temporada",
+   ylab="Rentas", xlab = "Temporada", names.arg=c("Spring", "Summer", "Fall", "Winter"), col=rainbow(n))
+```
+
+### *Respuesta:*
+* Al analizar graficamente los datos de la cantidad de alquileres (total) para cada temporada se comprueba que la demanda más alta se encuentra durante Otoño.
+
+## 9. Con una gráfica, que temperatura en que temporada producen una mayor renta de bicicleteas (Hint: heatmap).
+
+
+
+## 10. Muestre una gráfica de barras de día de la semana por bicicletas rentas, pero muestre en la misma barra cuantas rentas fueron por usuarios casuales y cuentas por usuarios registrados.
+
+```{r}
+grafica_dias <- dataset %>%
+  group_by(weekday) %>%
+  summarise(Casual = sum(casual), Registrados = sum(registered))
+
+barplot(t(data.matrix(grafica_dias)), main="Rentas vs días de la semana",
+  xlab="Rentas", ylab = "Días de la semana", col=c("green","red"), names.arg=grafica_dias$weekday, legend = c("Registrados", "Casual"), beside = TRUE, args.legend = list(x = "topright", bty="n"))
+```
